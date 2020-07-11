@@ -1,5 +1,6 @@
 <header>
 	<nav>
+		<a href="/" class="logotype">Simple Blog</a>
 		<ul>
 			<li><a href="/recent">Последние посты</a></li>
 			{{#if isAuth}}
@@ -9,7 +10,7 @@
 			<li><a href="/new-post">Новый пост</a></li>
 			<li><a href="/logout">Выйти</a></li>
 			{{else}}
-			<li><a href="/auth">Войти</a></li>
+			<li><a href="/signin">Войти</a></li>
 			{{/if}}
 		</ul>
 	</nav>

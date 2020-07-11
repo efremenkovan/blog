@@ -1,4 +1,4 @@
-const { Schema, model } = require('mognoose');
+const { Schema, model } = require('mongoose');
 
 const User = new Schema({
 	name: {
@@ -20,7 +20,6 @@ const User = new Schema({
 	posts_amount: {
 		type: Number,
 		default: 0,
-		required: true,
 	},
 	posts: [
 		{
@@ -35,6 +34,10 @@ const User = new Schema({
 		},
 	],
 	last_post: Number,
+	password: {
+		type: String,
+		required: true,
+	},
 });
 
-module.exports = model(User);
+module.exports = model('User', User);
