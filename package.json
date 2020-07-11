@@ -1,0 +1,30 @@
+{
+  "name": "blog",
+  "version": "1.0.0",
+  "description": "pratice project",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon index.js",
+    "serve": "nodemon index.js"
+  },
+  "keywords": [],
+  "author": "Andrey Efremenkov <efremenkovan99@gmail.com>",
+  "license": "ISC",
+  "repository": "git@githib.com:efremenkovan/blog.git",
+  "private": true,
+  "dependencies": {
+    "connect-mongo": "^3.2.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "express-handlebars": "^5.0.0",
+    "express-session": "^1.17.1",
+    "helmet": "^3.23.3",
+    "mongodb": "^3.5.9",
+    "mongoose": "^5.9.23",
+    "node-uuid": "^1.4.8"
+  },
+  "devDependencies": {
+    "dotenv": "^8.2.0",
+    "nodemon": "^2.0.4"
+  }
+}

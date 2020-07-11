@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    {{!-- {{#each meta}}
+        <meta 
+    {{/each}} --}}
+    <title>{{title}}</title>
+    <link rel="stylesheet" href="/assets/css/main.css" type="text/css" />
+    {{#if isAuthPage}}
+    <link rel="stylesheet" href="/assets/css/auth.css" type="text/css" />
+    <script src='/assets/js/auth.js'></script>
+    {{/if}}
+</head>
+
+<body>
+    {{> header}}
+    {{{body}}}
+    {{> footer}}
+</body>
+
+</html>

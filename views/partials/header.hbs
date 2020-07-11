@@ -1,0 +1,16 @@
+<header>
+	<nav>
+		<ul>
+			<li><a href="/recent">Последние посты</a></li>
+			{{#if isAuth}}
+			<li><a href="/blog">Мой блог</a></li>
+			<li><a href="/archive">Мой архив</a></li>
+			<li><a href="/saved-posts">Закладки</a></li>
+			<li><a href="/new-post">Новый пост</a></li>
+			<li><a href="/logout">Выйти</a></li>
+			{{else}}
+			<li><a href="/auth">Войти</a></li>
+			{{/if}}
+		</ul>
+	</nav>
+</header>

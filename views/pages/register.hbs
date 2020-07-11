@@ -1,0 +1,93 @@
+<section class="page auth-path">
+    <form onsubmit="handleSubmit(event)" class="auth-form__field">
+        <div class="auth-form__field">
+            <label for="nickname" class="auth-form__field__label">
+                Имя пользователя
+            </label>
+            <input type="text" id="nickname" name="nickname" placeholder="Никнейм" class="auth-form__field__input" />
+            <div class="auth-form__field__errors-list">
+
+            </div>
+        </div>
+
+        <div class="auth-form__field">
+            <label for="name" class="auth-form__field__label">
+                Ваше имя
+            </label>
+            <input type="text" id="name" name="name" placeholder="Ваше имя" class="auth-form__field__input" />
+            <div class="auth-form__field__erorrs-list">
+
+            </div>
+        </div>
+
+        <div class="auth-form__field__label">
+            <label for="surname" class="auth-form__field__label">
+                Ваша фамилия
+            </label>
+            <input type="text" id="surname" name="surname" placeholder="Ваше фамилия" class="auth-form__field__input" />
+            <div class="auth-form__field__errors-list">
+
+            </div>
+        </div>
+
+
+        <div class="auth-form__field__field">
+            <label for="password" class="auth-form__field__label">
+                Пароль
+            </label>
+            <input type="password" id="password" name="password" placeholder="Пароль" class="auth-form__field__input" />
+            <div class="auth-form__field__errors-list">
+
+            </div>
+        </div>
+
+        <div class="auth-form__field__field">
+            <label for="repeat_password" class="auth-form__field__label">
+                Повторите пароль
+            </label>
+            <input type="password" id="repeat_password" name="repeat_password" placeholder="Повторите пароль"
+                class="auth-form__field__input">
+            <div class="auth-form__field__errors-list">
+
+            </div>
+        </div>
+        <button type="reset">Сбросить</button>
+        <button type="submit">Зарегистрироваться</button>
+    </form>
+</section>
+
+<script>
+    async function handleSubmit(e) {
+        e.preventDefault()
+        const name = document.getElementById('name').value;
+        const data = new URLSearchParams(new FormData(e.target));
+        const res = await fetch('/auth/signup', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: data,
+        })
+            .then(res => res.json())
+            .then(data => data);
+        res.message === "OK"
+            ? location.reload()
+            : console.log(res);
+    }
+
+    function checkPassEquality() {
+
+    }
+
+    function hashPass() {
+
+    }
+
+    function showError() {
+
+    }
+
+    function hideError() {
+
+    }
+</script>
