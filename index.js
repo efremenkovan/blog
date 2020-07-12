@@ -5,10 +5,15 @@ const app = express();
 const cors = require('cors');
 const helmet = require('helmet');
 const mongoose = require('mongoose');
-const auth = require('./routes/auth');
 const session = require('express-session');
-const varMiddleware = require('./middleware/variables');
+const volleyball = require('volleyball');
+
+const auth = require('./routes/auth');
 const posts = require('./routes/posts');
+
+const varMiddleware = require('./middleware/variables');
+
+
 require('dotenv').config({
 	path: path.join(__dirname, '.env')
 });
@@ -19,6 +24,7 @@ const hbs = exphbs.create({
 	extname: 'hbs',
 	helpers: {},
 });
+app.use(volleyball);
 app.use(express.urlencoded({ extended: true }));
 app.use(
 	cors({

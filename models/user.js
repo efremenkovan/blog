@@ -12,6 +12,7 @@ const User = new Schema({
 	nickname: {
 		type: String,
 		required: true,
+		unique: true
 	},
 	created_at: {
 		type: Number,

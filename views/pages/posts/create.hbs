@@ -6,17 +6,27 @@
                 Заголовок статьи
             </label>
             <div class="create-form__field__errors-list">
-                
+
             </div>
         </div>
 
         <div class="create-form__field">
-            <input required type="text" id="tags" name="tags" class="create-form__field__input" />
+            <select required type="text" id="tags" name="tags" class="create-form__field__input select" multiple>
+                <optgroup for="tags">
+                    {{#each tags as | tag |}}
+                    <option value="{{tag.value}}" style="color: {{tag.color}}">
+                        <div>
+                            {{tag.label}}
+                        </div>
+                    </option>
+                    {{/each}}
+                </optgroup>
+            </select>
             <label for="tags" class="create-form__field__label">
                 Теги
             </label>
             <div class="create-form__field__errors-list">
-        
+
             </div>
         </div>
 
@@ -26,7 +36,7 @@
                 Текст поста
             </label>
             <div class="create-form__field__errors-list">
-        
+
             </div>
         </div>
 
@@ -70,7 +80,7 @@
             .then(res => res.json())
             .then(data => data);
 
-        if(res.message === 'OK') {
+        if (res.message === 'OK') {
             alert('post has been created');
         }
     }

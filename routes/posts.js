@@ -1,7 +1,35 @@
-const {Router} = require('express');
+const { Router } = require('express');
 const Post = require('../models/post');
 
 const router = new Router();
+
+const tags = [
+    {
+        label: 'Спорт',
+        value: 'sport',
+        color: '#15c7ef'
+    },
+    {
+        label: 'Технологии',
+        value: 'tech',
+        color: '#154eef',
+    },
+    {
+        label: 'Искусство',
+        value: 'art',
+        color: '#ef1529'
+    },
+    {
+        label: 'Новости',
+        value: 'news',
+        color: '#eccb27',
+    },
+    {
+        label: 'Мероприятия',
+        value: 'actions',
+        color: '#fd8cc0',
+    },
+];
 
 router.get('/post/create', (req, res) => {
     res.render('pages/posts/create', {
@@ -10,24 +38,27 @@ router.get('/post/create', (req, res) => {
             {
                 label: 'Спорт',
                 value: 'sport',
-                color: ''
+                color: '#15c7ef'
             },
             {
                 label: 'Технологии',
                 value: 'tech',
-                color: '',
+                color: '#154eef',
             },
             {
                 label: 'Искусство',
                 value: 'art',
+                color: '#ef1529'
             },
             {
                 label: 'Новости',
                 value: 'news',
+                color: '#eccb27',
             },
             {
                 label: 'Мероприятия',
                 value: 'actions',
+                color: '#fd8cc0',
             },
         ],
         isPostPage: true,
@@ -35,37 +66,21 @@ router.get('/post/create', (req, res) => {
 })
 
 router.get('/recent-posts', async (req, res, next) => {
-    const limit  = req.query.limit || 10;
+    const limit = req.query.limit || 10;
     const page = req.query.page || 1;
 
-    const total_posts = page * limit 
+    const total_posts = page * limit
 
     const posts = await Post.find().populate('author').sort({
         created_at: -1,
     }).limit(total_posts);
 
-    if(!posts.length) {
+    if (!posts.length) {
         res.status(404).json({
             message: 'posts|not_found',
         });
         return
     }
-
-    console.log(posts.map(({
-        title,
-        body,
-        author,
-        rates,
-        tags,
-        _id
-    }) => ({
-        title,
-        tags,
-        rates,
-        body,
-        author,
-        id: _id
-    })).filter((_, index) => index >= (page - 1) * limit && page < (page * limit - 1)));
 
     res.render(
         'pages/posts/index.hbs',
@@ -81,9 +96,14 @@ router.get('/recent-posts', async (req, res, next) => {
             }) => ({
                 title,
                 tags,
-                rates,
-                body,
-                author,
+                rate: rates.reduce((sum, value) => sum += value, 0) / rates.length || 0,
+                body: body.length > 160 ? body.substring(0, 120) + '...' : body,
+                author: {
+                    name: author.name,
+                    surname: author.surname,
+                    nickname: author.nickname,
+                },
+                link: `http://${process.env.hostname}/post/${_id}`,
                 id: _id
             })).filter((_, index) => index >= (page - 1) * limit && page < (page * limit - 1)),
         },
@@ -91,8 +111,8 @@ router.get('/recent-posts', async (req, res, next) => {
 })
 
 router.get('/post/:id', async (req, res, next) => {
-    const post = await Post.findOne({_id: req.params.id});
-    if(!post) {
+    const post = await Post.findOne({ _id: req.params.id }).populate('author');
+    if (!post) {
         res.status(404).json({
             message: "post|not_found",
         })
@@ -106,13 +126,13 @@ router.get('/post/:id', async (req, res, next) => {
 })
 
 router.post('/post/create', async (req, res, next) => {
-    const {title, body, tags} = req.body;
+    const { title, body, tags: formTags } = req.body;
 
     const post = new Post({
         title,
         body,
         author: req.session.uid,
-        tags,
+        tags: formTags.map(tag => tags.find(t => t.value === tag)),
     });
 
     try {
@@ -121,7 +141,7 @@ router.post('/post/create', async (req, res, next) => {
             message: "OK",
             post_id: post._id,
         })
-    } catch(e) {
+    } catch (e) {
         console.log("ERROR ON SAVING NEW POST: \n", e);
     }
 

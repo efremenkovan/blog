@@ -14,7 +14,11 @@ const Post = new Schema({
 		required: true,
 		ref: 'User',
 	},
-	tags: [String],
+	tags: [{
+		label: String,
+		value: String,
+		color: String
+	}],
 	rates: [
 		{
 			user: {
@@ -30,4 +34,4 @@ const Post = new Schema({
 	],
 });
 
-module.exports = model('Post',Post);
+module.exports = model('Post', Post);

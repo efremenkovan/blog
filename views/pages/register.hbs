@@ -76,18 +76,83 @@
 <script>
     function errors() {
         return {
+            password: {
+                target: document.getElementById('password'),
+                container: document.getElementById('password').parentNode.querySelector('.auth-form__field__errors-list'),
+                errorsList: [
+                    {
+                        type: 'length',
+                        value: 'Пароль должен быть не менее 6 символов.',
+                        validate: (string) => string.length >= 6,
+                    },
+                    {
+                        type: 'chars',
+                        value: 'Пароль должен содержать как минимум 1 цифру и 1 букву.',
+                        validate: (string) => new RegExp(/^(?=.*[0-9])(?=.*[a-zA-Z])([a-zA-Z0-9]+)$/).test(string)
+                    }
+                ]
+            },
             repeat_password: {
                 target: document.getElementById('repeat_password'),
-                container: document.getElementById('repeat_password').parentNode.getElementsByClassName('auth-form__field__errors-list')[0],
+                container: document.getElementById('repeat_password').parentNode.querySelector('.auth-form__field__errors-list'),
                 errorsList: [
-                    { type: 'equal', value: 'Password and repeat password fields should be equal' }
+                    {
+                        type: 'equal',
+                        value: 'Пароль и повторение пароля не совпадают.',
+                        validate: (s1) => s1 === document.querySelector('#password').value,
+                    }
                 ]
             },
             nickname: {
                 target: document.getElementById('nickname'),
-                container: document.getElementById('nickname').parentNode.getElementsByClassName('auth-form__field__errors-list')[0],
+                container: document.getElementById('nickname').parentNode.querySelector('.auth-form__field__errors-list'),
                 errorsList: [
-                    { type: 'taken', value: 'This nickname is already taken' }
+                    {
+                        type: 'taken',
+                        value: 'Такой пользователь уже зарегистрирован',
+                    },
+                    {
+                        type: 'chars',
+                        value: 'Никнейм может содержать только буквы (минимум 1) и символ \"_\"',
+                        validator: (string) => new RegExp(/^(\w+|\_?)$/).test(string)
+                    },
+                    {
+                        type: 'length',
+                        value: 'Никнейм должен быть не менее 4х символов и не более 24.',
+                        validator: (string) => string.length >= 4 && string.length < 24
+                    }
+                ]
+            },
+            name: {
+                target: document.getElementById('name'),
+                container: document.getElementById('name').parentNode.querySelector('.auth-form__field__errors-list'),
+                errorsList: [
+                    {
+                        type: 'chars',
+                        value: 'Имя может состоять только из букв',
+                        validate: (string) => new RegExp(/^[a-zа-я]+$/gi).test(string)
+                    },
+                    {
+                        type: 'length',
+                        value: 'Имя не может быть короче двух символов',
+                        validate: (string) => new RegExp(/^\w{2,}$/gi).test(string)
+                    }
+                ]
+            },
+            surname: {
+                target: document.getElementById('surname'),
+                container: document.getElementById('surname').parentNode.querySelector('.auth-form__field__errors-list'),
+                errorsList: [
+                    {
+                        type: 'chars',
+                        value: 'Фамилия может состоять только из букв',
+                        validate: (string) => new RegExp(/^[a-zа-я]+$/gi).test(string)
+                    },
+                    {
+                        type: 'length',
+                        value: 'Фамилия не может быть короче двух символов',
+                        validate: (string) => new RegExp(/^\w{2,}$/gi).test(string)
+                    }
                 ]
             }
         }
@@ -104,7 +169,10 @@
     async function handleSubmit(e) {
         e.preventDefault()
         clearErrors();
-
+        if (!validateForm(new FormData(e.target))) {
+            console.error('validation failed')
+            return;
+        }
 
         if (checkPassEquality()) {
             const name = document.getElementById('name').value;
@@ -119,8 +187,8 @@
                 .then(res => res.json())
                 .then(data => data);
             res.message === "OK"
-                ? location.reload()
-                : errorsHandler(res.message.split(/\|\|/));
+                ? location.path = "/"
+                : errorsHandler(res.message);
         } else {
             errorsHandler('repeat_password|equal')
         }
@@ -129,6 +197,20 @@
     function checkPassEquality() {
         return document.getElementById('password').value ===
             document.getElementById('repeat_password').value;
+    }
+
+    function validateForm(data) {
+        let validator = true;
+        for (let pair of data) {
+            const [field, value] = pair;
+            errors()[field].errorsList.forEach(error => {
+                if (error.validate && !error.validate(value)) {
+                    validator = false;
+                    proceedError(field, error.type);
+                }
+            })
+        }
+        return validator;
     }
 
     function clearErrors() {
@@ -207,17 +289,17 @@
         })
     }
 
-    function errorsHandler(resErrors) {
-        function proceedError(source, type) {
-            const error = errors()[source].errorsList.find(error => error.type === type);
-            if (errors()[source].container.querySelector(`[data-type=${error.type}]`)) return;
-            errors()[source]
-                .container
-                .insertAdjacentHTML('beforeEnd', `
+    function proceedError(source, type) {
+        const error = errors()[source].errorsList.find(error => error.type === type);
+        if (errors()[source].container.querySelector(`[data-type=${error.type}]`)) return;
+        errors()[source]
+            .container
+            .insertAdjacentHTML('beforeEnd', `
                     <span class="error" data-type="${error.type}">${error.value}</span>
                 `)
-        }
+    }
 
+    function errorsHandler(resErrors) {
         if (Array.isArray(resErrors)) {
             resErrors.forEach(e => {
                 const [source, type] = e.split('|');
