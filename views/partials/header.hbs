@@ -2,15 +2,17 @@
 	<nav>
 		<a href="/" class="logotype">Simple Blog</a>
 		<ul>
-			<li><a href="/recent">Последние посты</a></li>
+			<li><a href="/recent-posts">Последние посты</a></li>
 			{{#if isAuth}}
 			<li><a href="/blog">Мой блог</a></li>
 			<li><a href="/archive">Мой архив</a></li>
 			<li><a href="/saved-posts">Закладки</a></li>
-			<li><a href="/new-post">Новый пост</a></li>
+			<li><a href="/post/create">Новый пост</a></li>
 			<li><a href="/logout">Выйти</a></li>
-			{{else}}
-			<li><a href="/signin">Войти</a></li>
+			{{else if isLogin}}
+			<li><a href="/signup">Зарегистрироваться</a></li>
+			{{else if isRegister}}
+			<li><a href="/signup">Войти</a></li>
 			{{/if}}
 		</ul>
 	</nav>

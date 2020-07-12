@@ -12,12 +12,15 @@ const Post = new Schema({
 	author: {
 		type: Schema.Types.ObjectId,
 		required: true,
+		ref: 'User',
 	},
+	tags: [String],
 	rates: [
 		{
 			user: {
 				type: Schema.Types.ObjectId,
 				required: true,
+				ref: 'User'
 			},
 			rate: {
 				type: Number,
@@ -27,4 +30,4 @@ const Post = new Schema({
 	],
 });
 
-module.exports = model(Post);
+module.exports = model('Post',Post);

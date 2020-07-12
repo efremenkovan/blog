@@ -25,12 +25,14 @@ const User = new Schema({
 		{
 			type: Schema.Types.ObjectId,
 			required: true,
+			ref: 'Post'
 		},
 	],
 	saved_posts: [
 		{
 			type: Schema.Types.ObjectId,
 			required: true,
+			ref: 'Post',
 		},
 	],
 	last_post: Number,

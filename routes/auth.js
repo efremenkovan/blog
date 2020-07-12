@@ -8,6 +8,7 @@ router.get('/signup', (req, res, next) => {
 	res.render('pages/register.hbs', {
 		title: "Регистрация",
 		isAuthPage: true,
+		isRegister: true
 	});
 });
 
@@ -15,6 +16,7 @@ router.get('/signin', (req, res, next) => {
 	res.render('pages/login.hbs', {
 		title: "Вход",
 		isAuthPage: true,
+		isLogin: true
 	});
 });
 
@@ -40,6 +42,7 @@ router.post('/auth/signup', async (req, res, next) => {
 				})
 				await user.save();
 				req.session.isAuthenticated = true;
+				req.session.uid = user._id;
 				res.status(200).json({
 					message: "OK",
 				})
@@ -60,6 +63,8 @@ router.post('/auth/signin', async (req, res, next) => {
 			}
 			if (resust) {
 				req.session.isAuthenticated = true;
+				req.session.uid = user._id;
+
 				res.json({
 					message: "OK"
 				});

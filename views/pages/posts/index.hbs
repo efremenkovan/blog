@@ -1,0 +1,11 @@
+<section class="page posts-page">
+    {{#each posts as | post |}}
+        <span>{{post.title}}</span>
+        <div>
+            {{#each post.tags as | tag |}}
+                <span>{{tag}}</span>
+            {{/each}}
+        </div>
+        <span>{{post.body}}</span>
+    {{/each}}
+</section>

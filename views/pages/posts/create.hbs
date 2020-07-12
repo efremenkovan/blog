@@ -1,0 +1,77 @@
+<section class="page">
+    <form onsubmit="handleSubmit(event)" class="create-form">
+        <div class="create-form__field">
+            <input required type="text" id="title" name="title" class="create-form__field__input" />
+            <label for="title" class="create-form__field__label">
+                Заголовок статьи
+            </label>
+            <div class="create-form__field__errors-list">
+                
+            </div>
+        </div>
+
+        <div class="create-form__field">
+            <input required type="text" id="tags" name="tags" class="create-form__field__input" />
+            <label for="tags" class="create-form__field__label">
+                Теги
+            </label>
+            <div class="create-form__field__errors-list">
+        
+            </div>
+        </div>
+
+        <div class="create-form__field">
+            <input required type="text" id="body" name="body" class="create-form__field__input" />
+            <label for="body" class="create-form__field__label">
+                Текст поста
+            </label>
+            <div class="create-form__field__errors-list">
+        
+            </div>
+        </div>
+
+        <div class="create-form__controls">
+            {{!-- <button type="reset" class="auth-form__controls__button" onclick="ensureReset(event)">Сбросить</button> --}}
+            <button type="submit" class="auth-form__controls__button primary">Выложить пост</button>
+        </div>
+    </form>
+</section>
+
+<script>
+    function errors() {
+        return {
+            post_title: {
+                target: '',
+                container: '',
+                errorsList: [],
+            },
+            post_body: {
+                target: '',
+                container: '',
+                errorsList: [],
+            },
+            tags: {
+                target: '',
+                container: '',
+                errorsList: [],
+            },
+        }
+    }
+
+    async function handleSubmit(event) {
+        event.preventDefault();
+        const res = await fetch('/post/create', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams(new FormData(event.target)),
+        })
+            .then(res => res.json())
+            .then(data => data);
+
+        if(res.message === 'OK') {
+            alert('post has been created');
+        }
+    }
+</script>

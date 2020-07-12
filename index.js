@@ -8,6 +8,7 @@ const mongoose = require('mongoose');
 const auth = require('./routes/auth');
 const session = require('express-session');
 const varMiddleware = require('./middleware/variables');
+const posts = require('./routes/posts');
 require('dotenv').config({
 	path: path.join(__dirname, '.env')
 });
@@ -47,20 +48,21 @@ app.use(varMiddleware)
 
 // ROUTES
 app.use(auth);
-
+app.use(posts);
 app.get('/', function (req, res) {
 	res.render('pages/home.hbs');
 });
+
 // END ROUTES
 
 mongoose.connect(process.env.mongoUri, {
-	userNewUrlParser: true,
+	useNewUrlParser: true,
 	useFindAndModify: true,
 });
 
 mongoose.connection.on('open', () => {
 	console.log('connected to mogno');
 	app.listen(process.env.PORT, () => {
-		console.log('Listening on port! ', process.env.port);
+		console.log('Listening on port! ', process.env.PORT);
 	});
 });
