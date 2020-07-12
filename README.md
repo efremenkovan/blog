@@ -32,3 +32,19 @@
     * [ ] set user_id to localStorage aftter login/signup
 * [x] add GET /logout/ to clear user_id cookie
   * [x] redirect to login page  
+
+
+### UX/UI
+* [ ] Create post form
+  * [ ] Custom select
+  * [ ] Errors handler
+  * [ ] Editor
+    * [ ] Insert image as link
+    * [ ] Insert image as file
+    * [ ] Insert link
+
+* [ ] Post preview
+* [ ] Post read page
+  * [ ] Rate post
+* [ ] User page
+* [ ] Saved posts
