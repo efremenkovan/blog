@@ -1,7 +1,7 @@
 const { Router } = require('express');
 const User = require('../models/user');
 const bcrypt = require('bcrypt');
-const session = require('express-session');
+
 
 const router = new Router();
 
@@ -75,8 +75,8 @@ router.post('/auth/signin', async (req, res, next) => {
 				req.session.isAuthenticated = true;
 				req.session.uid = user._id;
 
-				req.sessopm.save((err) => {
-					if(err) {
+				req.session.save((err) => {
+					if (err) {
 						res.json({
 							message: "session|error_on_save"
 						});
@@ -93,7 +93,6 @@ router.post('/auth/signin', async (req, res, next) => {
 					message: "password|wrong",
 				})
 			}
-			next();
 		});
 	} else {
 		res.json({

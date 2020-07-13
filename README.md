@@ -9,12 +9,12 @@
   * [x] Hash password with bcrypt
   * [x] Save user to db
   * [x] Create a session
-    * [ ] Save session to database
+    * [x] Save session to database
  * [x] Login user with POST /auth/signin
   * [x] Check if user exists
     * [x] Compare provided pass with saved hash
     * [x] Create a session
-      * [ ] Save session to database
+      * [x] Save session to database
 * [x] Create sign up form; show errors; redirect;
   * [x] Validte required fields
 * [x] Create sign in form; show errors; redirect;

@@ -1,5 +1,7 @@
 const { Router } = require('express');
 const Post = require('../models/post');
+const User = require('../models/user');
+const authMiddleware = require('../middleware/auth');
 
 const router = new Router();
 
@@ -31,36 +33,10 @@ const tags = [
     },
 ];
 
-router.get('/post/create', (req, res) => {
+router.get('/post/create', authMiddleware, (req, res) => {
     res.render('pages/posts/create', {
         title: 'Новый пост',
-        tags: [
-            {
-                label: 'Спорт',
-                value: 'sport',
-                color: '#15c7ef'
-            },
-            {
-                label: 'Технологии',
-                value: 'tech',
-                color: '#154eef',
-            },
-            {
-                label: 'Искусство',
-                value: 'art',
-                color: '#ef1529'
-            },
-            {
-                label: 'Новости',
-                value: 'news',
-                color: '#eccb27',
-            },
-            {
-                label: 'Мероприятия',
-                value: 'actions',
-                color: '#fd8cc0',
-            },
-        ],
+        tags,
         isPostPage: true,
     });
 })
@@ -105,7 +81,7 @@ router.get('/recent-posts', async (req, res, next) => {
                     nickname: author.nickname,
                 },
                 cover,
-                link: `http://${process.env.hostname}/post/${_id}`,
+                link: `http://${process.env.HOSTNAME}/post/${_id}`,
                 id: _id
             })).filter((_, index) => index >= (page - 1) * limit && page < (page * limit - 1)),
         },
@@ -127,7 +103,7 @@ router.get('/post/:id', async (req, res, next) => {
     })
 })
 
-router.post('/post/create', async (req, res, next) => {
+router.post('/post/create', authMiddleware, async (req, res, next) => {
     const { title, body, tags: formTags, cover } = req.body;
 
     const post = new Post({
@@ -140,6 +116,9 @@ router.post('/post/create', async (req, res, next) => {
 
     try {
         await post.save();
+        const user = await User.findById(req.session.uid)
+        user.posts = user.posts.concat(post._id);
+        await user.save();
         res.json({
             message: "OK",
             post_id: post._id,
@@ -153,5 +132,26 @@ router.post('/post/create', async (req, res, next) => {
 
     next();
 })
+
+router.get('/blog', authMiddleware, async (req, res, next) => {
+    const user = await User.findById(req.session.uid).populate('posts');
+    console.log(user.posts.reduce((sum, post) => {
+        if (post.rates.langth === 0) return 0
+        return sum + post.rates.reduce((sum, { rate }) => sum + rate, 0) / post.rates.length
+    }, 0) / user.posts.length)
+    res.render('pages/posts/blog.hbs', {
+        user: {
+            name: user.name,
+            surname: user.surname,
+            nickname: user.nickname,
+            posts: user.posts.map(post => ({ title: post.title, body: post.body, cover: post.cover, tags: post.tags })),
+            average_rate: user.posts.reduce((sum, post) => {
+                if (post.rates.langth === 0) return 0
+                return sum + post.rates.reduce((sum, { rate }) => sum + rate, 0) / post.rates.length
+            }, 0) / user.posts.length || 0,
+            posts_amount: user.posts.length
+        },
+    })
+});
 
 module.exports = router;

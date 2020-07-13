@@ -8,20 +8,20 @@ const mongoose = require('mongoose');
 const session = require('express-session');
 const volleyball = require('volleyball');
 const MongoStore = require('connect-mongodb-session')(session)
-const store = new MongoStore({
-	collection: 'sessions',
-	uri: process.env.mongoUri,
-})
-
 const auth = require('./routes/auth');
 const posts = require('./routes/posts');
-
 const varMiddleware = require('./middleware/variables');
-
 
 require('dotenv').config({
 	path: path.join(__dirname, '.env')
 });
+
+const store = new MongoStore({
+	collection: 'sessions',
+	databaseName: 'PracticeBlog',
+	uri: process.env.MONGO_URI,
+})
+
 
 // SETTINGS
 const hbs = exphbs.create({
@@ -67,7 +67,7 @@ app.get('/', function (req, res) {
 
 // END ROUTES
 
-mongoose.connect(process.env.mongoUri, {
+mongoose.connect(process.env.MONGO_URI, {
 	useNewUrlParser: true,
 	useFindAndModify: true,
 });

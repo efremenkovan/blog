@@ -417,3 +417,53 @@ input:-internal-autofill-selected {
 .form__field textarea {
 	resize: vertical;
 }
+
+.post-preview {
+	width: 100%;
+	min-height: 200px;
+	height: fit-content;
+	display: flex;
+	border-radius: 16px;
+	box-shadow: 0px 8px 24px rgba(41, 41, 41, 0.15);
+	display: flex;
+	overflow: hidden;
+	height: 100%;
+}
+
+.posts-page {
+	display: grid;
+	padding: 10vh 7vw 5vh;
+	grid-template-columns: repeat(auto-fill, minmax(650px,1fr));
+	grid-gap: 32px 32px;
+}
+
+.post-preview__cover {
+	width: 200px;
+	object-fit: cover;
+	margin-right: 40px;
+}
+
+.post-preview__content {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	justify-content: space-between;
+	padding: 32px 32px 32px 0px;
+	color: var(--black);
+}
+
+.post-preview__content__text {
+	flex-grow: 1;
+}
+
+.post-preview__header {
+	margin-bottom: 16px;
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+}
+
+.post-preview__header__title {
+	font-size: 24px;
+	margin-bottom: 8px;
+}

@@ -1,0 +1,13 @@
+<section class="page blog-page">
+    <div class="posts-page__header">
+        <h1 class="posts-page__header__title">{{this.user.name}} {{this.user.surname}}</h1>
+        <span class="posts-page__header__nickname">@{{this.user.nickname}}</span>
+        <span class="posts-page__header__average">{{this.user.average_rate}}</span>
+        <span class="posts-page__header__posts-amount">{{this.user.posts_amount}}</span>
+    </div>
+    <div class="posts-page">
+        {{#each this.user.posts as | post |}}
+        {{> posts/post_preview post}}
+        {{/each}}
+    </div>
+</section>
