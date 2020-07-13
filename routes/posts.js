@@ -92,6 +92,7 @@ router.get('/recent-posts', async (req, res, next) => {
                 author,
                 rates,
                 tags,
+                cover,
                 _id
             }) => ({
                 title,
@@ -103,6 +104,7 @@ router.get('/recent-posts', async (req, res, next) => {
                     surname: author.surname,
                     nickname: author.nickname,
                 },
+                cover,
                 link: `http://${process.env.hostname}/post/${_id}`,
                 id: _id
             })).filter((_, index) => index >= (page - 1) * limit && page < (page * limit - 1)),
@@ -126,13 +128,14 @@ router.get('/post/:id', async (req, res, next) => {
 })
 
 router.post('/post/create', async (req, res, next) => {
-    const { title, body, tags: formTags } = req.body;
+    const { title, body, tags: formTags, cover } = req.body;
 
     const post = new Post({
         title,
         body,
         author: req.session.uid,
         tags: formTags.map(tag => tags.find(t => t.value === tag)),
+        cover
     });
 
     try {
@@ -142,6 +145,9 @@ router.post('/post/create', async (req, res, next) => {
             post_id: post._id,
         })
     } catch (e) {
+        res.status(500).json({
+            message: "posts|unable_to_save",
+        })
         console.log("ERROR ON SAVING NEW POST: \n", e);
     }
 

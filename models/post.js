@@ -19,6 +19,10 @@ const Post = new Schema({
 		value: String,
 		color: String
 	}],
+	cover: {
+		type: String,
+		required: true,
+	},
 	rates: [
 		{
 			user: {

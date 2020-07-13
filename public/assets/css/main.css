@@ -46,6 +46,7 @@ header {
 	height: 60px;
 	background-color: white;
 	align-items: center;
+	z-index: 10;
 }
 
 header .logotype {
@@ -84,6 +85,11 @@ header nav {
 	grid-auto-rows: minmax(400px, fit-content);
 	align-content: center;
 	align-items: center;
+}
+
+.page {
+	flex-grow: 1;
+	z-index: 1;
 }
 
 .hero__title {
@@ -177,6 +183,7 @@ header nav {
 		padding-top: 10vh;
 		transition: 0.4s transform ease-in-out;
 		transform: translateX(100%);
+		z-index: 101;
 	}
 
 	.header__menu.active {
@@ -198,6 +205,7 @@ header nav {
 
 	#menu-button {
 		display: flex;
+		z-index: 102;
 	}
 
 	.header__menu.active + #menu-button .menu-button__center {
@@ -227,6 +235,153 @@ footer {
 	font-size: 12px;
 }
 
+/* FORMS STYLES */
+
+.form {
+    display: flex;
+    flex-direction: column;
+    margin: 0 auto;
+    width: 86vw;
+    max-width: 600px;
+}
+
+.form__field {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    position: relative;
+    will-change: height;
+    transition: 0.2s height ease-in-out;
+    height: fit-content;
+    margin-bottom: 16px;
+}
+
+.form__field__input {
+    border: none;
+    background-color: unset;
+    border-radius: 6px;
+    border: 1px solid var(--grey);
+    border-radius: 6px;
+    padding: 12px 16px;
+    font-size: 16px;
+    height: 100%;
+}
+
+.form__field__input:focus {
+    outline: none;
+}
+
+.form__field__label {
+    position: absolute;
+    top: 50%;
+    left: 16px;
+    transform: translateY(-50%);
+    font-size: 16px;
+    transition: all 0.2s ease-in-out;
+    background-color: white;
+    color: var(--grey);
+}
+
+.form__field__input:invalid:focus + label,
+.form__field__input:valid + label {
+    left: 8px;
+    transform: translateY(-55%);
+    padding: 0px 8px;
+    top: 0px;
+    font-size: 12px;
+    border-radius: 16px;
+}
+
+input:-internal-autofill-selected {
+    background-color: unset !important;
+}
+
+.form__controls {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(200px, 1fr));
+    grid-gap: 16px;
+}
+
+.form__controls__button {
+    padding: 16px 32px;
+    border: none;
+    background-color: var(--grey);
+    color: var(--black);
+    border-radius: 13px;
+    font-weight: 500;
+}
+
+.form__controls__button.primary {
+    background-color: var(--primary);
+    color: var(--white);
+}
+
+.form__field__errors-list {
+    left: 16px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    z-index: 2;
+}
+
+.error {
+    background-color: var(--red);
+    padding: 8px 12px;
+    font-size: 12px;
+    color: var(--white);
+    border-radius: 4px;
+    line-height: 1.31;
+    margin-bottom: 4px;
+}
+
+.error:first-child {
+    margin-top: 4px;
+}
+
+.error:last-child {
+    margin-bottom: 8px;
+}
+
+.form__field.checkbox-group {
+	display: flex;
+	flex-direction: column;
+	height: fit-content;
+	padding-left: 8px;
+	margin-top: 16px;
+}
+
+.checkbox-group .form__field__label{
+	position: relative;
+	top: unset;
+	left: unset;
+	height: 13px;
+	width: 13px;
+}
+
+.checkbox-group__label {
+	display: block;
+    margin-bottom: 16px;
+}
+
+.form__field__input.checkbox {
+	border: initial;
+	background-color: initial;
+	margin-right: 4px;
+}
+
+.form__field__label.checkbox {
+	display: flex;
+	align-items: center;
+	margin-bottom: 8px;
+	position: relative;
+}
+
+.form__field__input.checkbox:checked + .form__field__input-label {
+	color: var(--black);
+}
+
+/* END FORM STYLES */
+
 
 
 /* MOVE THIS TO posts.css */
@@ -246,4 +401,19 @@ footer {
 
 .create-form__field__input.select option span {
 	color: var(--black)
+}
+
+.page.create-post {
+	display: flex;
+	align-items: center;
+	padding-top: 10vh;
+	padding-bottom: 10vh;
+}
+
+.create-post .form__controls {
+	grid-template-columns: 1fr;
+}
+
+.form__field textarea {
+	resize: vertical;
 }

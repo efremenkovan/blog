@@ -1,20 +1,23 @@
 <a class="post-preview" href="{{this.link}}">
-    <div class="post-preview__header">
-        <h4 class="post-preview__header__title">{{this.title}}</h4>
-        <div class="post-preview__author">
-            <span class="post-preview__author__info">{{this.author.name}} {{this.author.surname}}</span>
-            <span class="post-preview__author__nickname">@{{this.author.nickname}}</span>
+    <img src="{{this.cover}}" alt="Cover" class="post-preview__cover" />
+    <div class="post-preview__content">
+        <div class="post-preview__header">
+            <h4 class="post-preview__header__title">{{this.title}}</h4>
+            <div class="post-preview__author">
+                <span class="post-preview__author__info">{{this.author.name}} {{this.author.surname}}</span>
+                <span class="post-preview__author__nickname">@{{this.author.nickname}}</span>
+            </div>
         </div>
-    </div>
-    {{#if this.tags.length}}
-    <div class="post-preview__tags">
-        {{#each this.tags as | tag |}}
-        <div style="color: {{tag.color}}">
-            <span class="post-preview__tag">{{tag.label}}</span>
+        {{#if this.tags.length}}
+        <div class="post-preview__tags">
+            {{#each this.tags as | tag |}}
+            <div style="color: {{tag.color}}">
+                <span class="post-preview__tag">{{tag.label}}</span>
+            </div>
+            {{/each}}
         </div>
-        {{/each}}
+        <div class="post-preview__content">{{this.body}}</div>
+        <div class="post-preview__footer">{{this.rate}}</div>
+        {{/if}}
     </div>
-    <div class="post-preview__content">{{this.body}}</div>
-    <div class="post-preview__footer">{{this.rate}}</div>
-    {{/if}}
 </a>

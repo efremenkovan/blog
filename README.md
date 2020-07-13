@@ -1,6 +1,6 @@
 # University practice blog project.
 
-## Authentication:
+### Authentication:
 * [x] Create server
 * [x] Add auth routes
 * [x] Create user with POST /auth/signup
@@ -22,9 +22,9 @@
 
 ### Authorization: 
 * [ ] Visitors car only see the recent posts page
-  * [x] isLoggedIn middleware
+  * [ ] isLoggedIn middleware
   * [ ] Redirect to login form
-* [x] Logged in users can only see their saved posts
+* [ ] Logged in users can only see their saved posts
   * [ ] allowAcces middleware
     * [ ] id in url must match id in req.user
     * [ ] send an unauthorized error message
@@ -35,10 +35,11 @@
 
 
 ### UX/UI
-* [ ] Create post form
-  * [ ] Custom select
+* [x] Create post form
+  * [x] Custom select
   * [ ] Errors handler
   * [ ] Editor
+    * [x] Cover
     * [ ] Insert image as link
     * [ ] Insert image as file
     * [ ] Insert link

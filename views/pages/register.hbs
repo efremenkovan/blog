@@ -1,58 +1,58 @@
 <section class="page auth-page">
-    <form onsubmit="handleSubmit(event)" class="auth-form" id="auth-form">
-        <div class="auth-form__field">
-            <input required type="text" id="nickname" name="nickname" class="auth-form__field__input" />
-            <label for="nickname" class="auth-form__field__label">
+    <form onsubmit="handleSubmit(event)" class="form" id="form">
+        <div class="form__field">
+            <input required type="text" id="nickname" name="nickname" class="form__field__input" />
+            <label for="nickname" class="form__field__label">
                 Имя пользователя
             </label>
-            <div class="auth-form__field__errors-list">
+            <div class="form__field__errors-list">
 
             </div>
         </div>
 
-        <div class="auth-form__field">
-            <input required type="text" id="name" name="name" class="auth-form__field__input" />
-            <label for="name" class="auth-form__field__label">
+        <div class="form__field">
+            <input required type="text" id="name" name="name" class="form__field__input" />
+            <label for="name" class="form__field__label">
                 Ваше имя
             </label>
-            <div class="auth-form__field__errors-list">
+            <div class="form__field__errors-list">
 
             </div>
         </div>
 
-        <div class="auth-form__field">
-            <input required type="text" id="surname" name="surname" class="auth-form__field__input" />
-            <label for="surname" class="auth-form__field__label">
+        <div class="form__field">
+            <input required type="text" id="surname" name="surname" class="form__field__input" />
+            <label for="surname" class="form__field__label">
                 Ваша фамилия
             </label>
-            <div class="auth-form__field__errors-list">
+            <div class="form__field__errors-list">
 
             </div>
         </div>
 
 
-        <div class="auth-form__field">
-            <input required type="password" id="password" name="password" class="auth-form__field__input" />
-            <label for="password" class="auth-form__field__label">
+        <div class="form__field">
+            <input required type="password" id="password" name="password" class="form__field__input" />
+            <label for="password" class="form__field__label">
                 Пароль
             </label>
-            <div class="auth-form__field__errors-list">
+            <div class="form__field__errors-list">
 
             </div>
         </div>
 
-        <div class="auth-form__field">
-            <input required type="password" id="repeat_password" name="repeat_password" class="auth-form__field__input">
-            <label for="repeat_password" class="auth-form__field__label">
+        <div class="form__field">
+            <input required type="password" id="repeat_password" name="repeat_password" class="form__field__input">
+            <label for="repeat_password" class="form__field__label">
                 Повторите пароль
             </label>
-            <div class="auth-form__field__errors-list">
+            <div class="form__field__errors-list">
 
             </div>
         </div>
-        <div class="auth-form__controls">
-            <button type="reset" class="auth-form__controls__button" onclick="ensureReset(event)">Сбросить</button>
-            <button type="submit" class="auth-form__controls__button primary">Зарегистрироваться</button>
+        <div class="form__controls">
+            <button type="reset" class="form__controls__button" onclick="ensureReset(event)">Сбросить</button>
+            <button type="submit" class="form__controls__button primary">Зарегистрироваться</button>
         </div>
     </form>
 
@@ -78,7 +78,7 @@
         return {
             password: {
                 target: document.getElementById('password'),
-                container: document.getElementById('password').parentNode.querySelector('.auth-form__field__errors-list'),
+                container: document.getElementById('password').parentNode.querySelector('.form__field__errors-list'),
                 errorsList: [
                     {
                         type: 'length',
@@ -94,7 +94,7 @@
             },
             repeat_password: {
                 target: document.getElementById('repeat_password'),
-                container: document.getElementById('repeat_password').parentNode.querySelector('.auth-form__field__errors-list'),
+                container: document.getElementById('repeat_password').parentNode.querySelector('.form__field__errors-list'),
                 errorsList: [
                     {
                         type: 'equal',
@@ -105,7 +105,7 @@
             },
             nickname: {
                 target: document.getElementById('nickname'),
-                container: document.getElementById('nickname').parentNode.querySelector('.auth-form__field__errors-list'),
+                container: document.getElementById('nickname').parentNode.querySelector('.form__field__errors-list'),
                 errorsList: [
                     {
                         type: 'taken',
@@ -125,7 +125,7 @@
             },
             name: {
                 target: document.getElementById('name'),
-                container: document.getElementById('name').parentNode.querySelector('.auth-form__field__errors-list'),
+                container: document.getElementById('name').parentNode.querySelector('.form__field__errors-list'),
                 errorsList: [
                     {
                         type: 'chars',
@@ -141,7 +141,7 @@
             },
             surname: {
                 target: document.getElementById('surname'),
-                container: document.getElementById('surname').parentNode.querySelector('.auth-form__field__errors-list'),
+                container: document.getElementById('surname').parentNode.querySelector('.form__field__errors-list'),
                 errorsList: [
                     {
                         type: 'chars',
@@ -158,11 +158,11 @@
         }
     }
 
-    const elements = document.getElementsByClassName('auth-form__field__input');
+    const elements = document.getElementsByClassName('form__field__input');
     for (let i = 0; i < elements.length; i++) {
         const element = elements[i];
         element.addEventListener('focus', () => {
-            element.parentNode.getElementsByClassName('auth-form__field__errors-list')[0].innerHTML = ''
+            element.parentNode.getElementsByClassName('form__field__errors-list')[0].innerHTML = ''
         })
     }
 
@@ -214,11 +214,11 @@
     }
 
     function clearErrors() {
-        const elements = document.getElementsByClassName('auth-form__field__input');
+        const elements = document.getElementsByClassName('form__field__input');
         for (let i = 0; i < elements.length; i++) {
             const element = elements[i];
             element.addEventListener('focus', () => {
-                element.parentNode.getElementsByClassName('auth-form__field__errors-list')[0].innerHTML = ''
+                element.parentNode.getElementsByClassName('form__field__errors-list')[0].innerHTML = ''
             })
         }
     }
@@ -239,7 +239,7 @@
         })
             .then(() => {
                 clearErrors();
-                document.getElementById('auth-form').reset();
+                document.getElementById('form').reset();
                 closeModal();
             })
             .catch(() => closeModal())
