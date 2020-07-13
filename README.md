@@ -37,15 +37,15 @@
 ### UX/UI
 * [x] Create post form
   * [x] Custom select
-  * [ ] Errors handler
-  * [ ] Editor
+  * [x] Errors handler
+  * [x] Editor
     * [x] Cover
-    * [ ] Insert image as link
-    * [ ] Insert image as file
-    * [ ] Insert link
 
-* [ ] Post preview
+* [x] Post preview
+  * [ ] Edit page
 * [ ] Post read page
   * [ ] Rate post
 * [ ] User page
 * [ ] Saved posts
+* [ ] Archive
+* [ ] hepler for checked label

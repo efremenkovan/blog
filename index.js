@@ -27,7 +27,12 @@ const store = new MongoStore({
 const hbs = exphbs.create({
 	defaultLayout: 'main',
 	extname: 'hbs',
-	helpers: {},
+	helpers: {
+		hasTag(tag, tags, options) {
+			console.log(tag, tags, options)
+			return tags.includes(tag);
+		}
+	},
 });
 app.use(volleyball);
 app.use(express.urlencoded({ extended: true }));

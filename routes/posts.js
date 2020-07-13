@@ -97,9 +97,39 @@ router.get('/post/:id', async (req, res, next) => {
         return next();
     }
 
-    res.json({
-        message: 'OK',
-        post,
+    res.render('pages/posts/single', {
+        post: {
+            title: post.title,
+            body: post.body,
+            cover: post.cover,
+            author: {
+                name: post.author.name,
+                surname: post.author.surname,
+                nickname: post.author.nickname,
+            },
+            rate: post.rates.reduce((sum, { rate }) => sum += rate, 0)
+        },
+    })
+})
+
+router.get('/post/edit/:id', authMiddleware, async (req, res, next) => {
+    const post = await Post.findOne({ _id: req.params.id }).populate('author');
+    if (!post) {
+        res.status(404).json({
+            message: "post|not_found",
+        })
+        return next();
+    }
+    console.log(post.tags.map(({ value }) => value))
+    res.render('pages/posts/edit', {
+        post: {
+            title: post.title,
+            body: post.body,
+            cover: post.cover,
+            tags: post.tags.map(({ value }) => value),
+            rate: post.rates.reduce((sum, { rate }) => sum += rate, 0)
+        },
+        tags,
     })
 })
 

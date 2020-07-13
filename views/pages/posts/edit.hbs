@@ -1,0 +1,97 @@
+<section class="page create-post">
+    <form onsubmit="handleSubmit(event)" class="form">
+        <div class="form__field">
+            <input required type="text" id="title" name="title" class="form__field__input" value="{{post.title}}" />
+            <label for="title" class="form__field__label">
+                Заголовок статьи
+            </label>
+            <div class="form__field__errors-list">
+
+            </div>
+        </div>
+
+        <div class="form__field">
+            <input required type="link" id="cover" name="cover" class="form__field__input" value="{{post.cover}}" />
+            <label for="cover" class="form__field__label">
+                Обложка статьи
+            </label>
+            <div class="form__field__errors-list">
+
+            </div>
+        </div>
+
+        <div class="form__field checkbox-group">
+            <span class="form__field__label checkbox-group__label">Теги</span>
+            {{#each tags as | tag |}}
+            <label class="form__field__label checkbox">
+                {{#if (hasTag tag.value @root.post.tags)}}
+                <input value="{{tag.value}}" type="checkbox" name="tags" class="form__field__input checkbox" checked />
+                {{else}}
+                <input value="{{tag.value}}" type="checkbox" name="tags" class="form__field__input checkbox" />
+                {{/if}}
+                <span class="form__field__input-label">{{tag.label}}</span>
+            </label>
+            {{/each}}
+
+            <div class="form__field__errors-list">
+
+            </div>
+        </div>
+
+        <div class="form__field">
+            <textarea required type="text" id="body" name="body" class="form__field__input"
+                value="{{post.body}}"></textarea>
+            <label for="body" class="form__field__label">
+                Текст поста
+            </label>
+            <div class="form__field__errors-list">
+
+            </div>
+        </div>
+
+        <div class="form__controls">
+            {{!-- <button type="reset" class="auth-form__controls__button" onclick="ensureReset(event)">Сбросить</button> --}}
+            <button type="submit" class="form__controls__button primary">Выложить пост</button>
+        </div>
+    </form>
+</section>
+
+<script>
+    function errors() {
+        return {
+            post_title: {
+                target: '',
+                container: '',
+                errorsList: [],
+            },
+            post_body: {
+                target: '',
+                container: '',
+                errorsList: [],
+            },
+            tags: {
+                target: '',
+                container: '',
+                errorsList: [],
+            },
+        }
+    }
+
+    async function handleSubmit(event) {
+        event.preventDefault();
+        let d = new FormData(event.target)
+        const res = await fetch('/post/create', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams(new FormData(event.target)),
+        })
+            .then(res => res.json())
+            .then(data => data);
+
+        if (res.message === 'OK') {
+            location.pathname = "/post/" + res.post_id;
+        }
+    }
+</script>
