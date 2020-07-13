@@ -7,6 +7,11 @@ const helmet = require('helmet');
 const mongoose = require('mongoose');
 const session = require('express-session');
 const volleyball = require('volleyball');
+const MongoStore = require('connect-mongodb-session')(session)
+const store = new MongoStore({
+	collection: 'sessions',
+	uri: process.env.mongoUri,
+})
 
 const auth = require('./routes/auth');
 const posts = require('./routes/posts');
@@ -36,6 +41,7 @@ app.use(session({
 	secret: 'SECRET PLACEHOLDER',
 	resave: false,
 	saveUninitialized: false,
+	store
 }));
 app.engine('hbs', hbs.engine);
 app.set('view engine', 'hbs');
