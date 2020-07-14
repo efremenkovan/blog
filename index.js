@@ -67,7 +67,26 @@ app.use(varMiddleware)
 app.use(auth);
 app.use(posts);
 app.get('/', function (req, res) {
+	if (req.session.isAuthenticated) return res.redirect('/blog')
 	res.render('pages/home.hbs');
+});
+
+app.get('/error', function (req, res) {
+	let message;
+	switch(req.query.status) {
+		case '403':
+			message = 'You don\'t have access to this page';
+			break;
+		case '404':
+			message = 'Page not found';
+			break;
+		default: 
+			message = 'Something went wrong'
+	}
+	res.render('pages/error.hbs', {
+		status: req.query.status,
+		message
+	});
 });
 
 // END ROUTES

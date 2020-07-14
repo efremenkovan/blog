@@ -6,6 +6,7 @@ const bcrypt = require('bcrypt');
 const router = new Router();
 
 router.get('/signup', (req, res, next) => {
+	if(req.session.isAuthenticated) return res.redirect('/blog')
 	res.render('pages/register.hbs', {
 		title: "Регистрация",
 		isAuthPage: true,
@@ -22,6 +23,7 @@ router.get('/signin', (req, res, next) => {
 });
 
 router.post('/auth/signup', async (req, res, next) => {
+	if (req.session.isAuthenticated) return res.redirect('/blog')
 	const user = await User.findOne({ nickname: req.body.nickname })
 	if (user) {
 		res.status(400).json({
@@ -64,6 +66,9 @@ router.post('/auth/signup', async (req, res, next) => {
 });
 
 router.post('/auth/signin', async (req, res, next) => {
+	if (req.session.isAuthenticated) return res.json({
+		message: 'User is already authorized'
+	})
 	const user = await User.findOne({ nickname: req.body.nickname })
 
 	if (user) {

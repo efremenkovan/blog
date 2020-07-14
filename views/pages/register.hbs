@@ -187,7 +187,7 @@
                 .then(res => res.json())
                 .then(data => data);
             res.message === "OK"
-                ? location.path = "/"
+                ? location.pathname = "/"
                 : errorsHandler(res.message);
         } else {
             errorsHandler('repeat_password|equal')

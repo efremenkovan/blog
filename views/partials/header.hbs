@@ -5,24 +5,29 @@
 		</a>
 		<ul id="menu" class="header__menu">
 			<li class="header__menu__element">
-				<a class="header__menu__element__link" href="/recent-posts">Последние посты</a></li>
+				<a class="header__menu__element__link" href="/recent-posts">Последние посты</a>
+			</li>
 			{{#if isAuth}}
 			<li class="header__menu__element">
-				<a class="header__menu__element__link" href="/blog">Мой блог</a></li>
+				<a class="header__menu__element__link" href="/blog">Мой блог</a>
+			</li>
 			<li class="header__menu__element">
-				<a class="header__menu__element__link" href="/archive">Мой архив</a></li>
+				<a class="header__menu__element__link" href="/saved-posts">Закладки</a>
+			</li>
 			<li class="header__menu__element">
-				<a class="header__menu__element__link" href="/saved-posts">Закладки</a></li>
+				<a class="header__menu__element__link" href="/post/create">Новый пост</a>
+			</li>
 			<li class="header__menu__element">
-				<a class="header__menu__element__link" href="/post/create">Новый пост</a></li>
-			<li class="header__menu__element">
-				<a class="header__menu__element__link" href="/logout">Выйти</a></li>
+				<a class="header__menu__element__link" href="/logout">Выйти</a>
+			</li>
 			{{else if isLogin}}
 			<li class="header__menu__element">
-				<a class="header__menu__element__link" href="/signup">Зарегистрироваться</a></li>
+				<a class="header__menu__element__link" href="/signup">Зарегистрироваться</a>
+			</li>
 			{{else}}
 			<li class="header__menu__element">
-				<a class="header__menu__element__link" href="/signin">Войти</a></li>
+				<a class="header__menu__element__link" href="/signin">Войти</a>
+			</li>
 			{{/if}}
 		</ul>
 		<button id="menu-button">

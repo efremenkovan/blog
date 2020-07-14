@@ -36,6 +36,7 @@ const Post = new Schema({
 			},
 		},
 	],
+	created_at: Number,
 });
 
 module.exports = model('Post', Post);

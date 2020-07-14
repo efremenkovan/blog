@@ -3,10 +3,12 @@
     <div class="post-preview__content">
         <div class="post-preview__header">
             <h4 class="post-preview__header__title">{{this.title}}</h4>
+            {{#unless @root.isBlog}}
             <div class="post-preview__author">
                 <span class="post-preview__author__info">{{this.author.name}} {{this.author.surname}}</span>
                 <span class="post-preview__author__nickname">@{{this.author.nickname}}</span>
             </div>
+            {{/unless}}
         </div>
         {{#if this.tags.length}}
         <div class="post-preview__tags">
