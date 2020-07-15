@@ -200,7 +200,6 @@ router.get('/recent-posts', async (req, res, next) => {
     const limit = req.query.limit || 10;
     const page = req.query.page || 1;
 
-    const currentUser = await User.findById(req.session.uid);
 
     let posts = await Post
         .find()
@@ -227,6 +226,10 @@ router.get('/recent-posts', async (req, res, next) => {
             : count
     }) / limit)), (_, index) => index + 1)
 
+    let currentUser
+    if (req.session.uid)
+        currentUser = await User.findById(req.session.uid);
+
     posts = posts.map((post) => ({
         title: post.title,
         tags: post.tags,
@@ -239,8 +242,12 @@ router.get('/recent-posts', async (req, res, next) => {
             surname: post.author.surname,
             nickname: post.author.nickname,
         },
-        isUserPost: req.session.uid == post.author._id.toString(),
-        isSaved: currentUser.saved_posts.includes(post._id),
+        isUserPost: req.session.uid
+            ? req.session.uid == post.author._id.toString()
+            : false,
+        isSaved: req.session.uid
+            ? currentUser.saved_posts.includes(post._id)
+            : false,
         cover: post.cover,
         link: `http://${process.env.HOSTNAME}/post/${post._id}`,
         id: post._id
