@@ -45,7 +45,6 @@
         </div>
 
         <div class="form__controls">
-            {{!-- <button type="reset" class="auth-form__controls__button" onclick="ensureReset(event)">Сбросить</button> --}}
             <button type="submit" class="form__controls__button primary">Выложить пост</button>
         </div>
     </form>
@@ -88,5 +87,21 @@
         if (res.message === 'OK') {
             location.pathname = "/post/" + res.post_id;
         }
+    }
+
+    window.onload = () => {
+        const body = document.getElementById('body');
+        const callback = (e) => {
+            console.log(body.scrollHeight)
+            const dh = body.scrollHeight - body.clientHeight;
+            console.log()
+            if (body.scrollHeight && (body.clientHeight < 500)) {
+                body.style.height = body.scrollHeight + 2 + 'px';
+                window.scrollBy(0, dh)
+            }
+        }
+
+        callback();
+        body.addEventListener('input', callback)
     }
 </script>

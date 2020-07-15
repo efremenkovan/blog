@@ -25,8 +25,7 @@
   * [x] isLoggedIn middleware
   * [x] Redirect to login form
 * [x] Logged in users can only see their saved posts
-  * [ ] redirect to user page if they visit the homepage
-    * [ ] set user_id to localStorage after login/signup
+  * [x] redirect to user page if they visit the homepage
 * [x] add GET /logout/ to clear user_id cookie
   * [x] redirect to login page  
 
@@ -40,17 +39,15 @@
 
 * [x] Post preview
   * [x] Edit page
-* [ ] Post read page
-  * [ ] Rate post
+* [x] Post read page
+  * [x] Rate post
 * [x] User page
-* [ ] Saved posts
-  * [ ] Icon in the top right corner on preview
-  * [ ] Floating button on the read page
-  * [ ] Send req on saving with fetch -> update icon | show alert; 
+* [x] Saved posts
+  * [x] Icon in the top right corner on preview
+  * [x] Send req on saving with fetch -> update icon | show alert; 
 * [x] hepler for checked label
 * [x] pagination
-* [ ] Error page
+* [x] Error page
   * [x] HTML and logic
-  * [ ] Styles
-* [ ] Edit icon on the posts
-* [ ] Personal page cover on registration page
+  * [x] Styles
+* [x] Edit icon on the posts

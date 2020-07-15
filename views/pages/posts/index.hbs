@@ -1,7 +1,9 @@
-<section class="page posts-page">
-    {{#each posts as | post |}}
-    {{> posts/post_preview post}}
-    {{/each}}
+<section class="page recent-posts-page">
+    <div class="posts-page">
+        {{#each posts as | post |}}
+        {{> posts/post_preview post}}
+        {{/each}}
+    </div>
 
     {{> posts/pagination pages}}
 </section>

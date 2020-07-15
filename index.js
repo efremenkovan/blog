@@ -29,9 +29,15 @@ const hbs = exphbs.create({
 	extname: 'hbs',
 	helpers: {
 		hasTag(tag, tags, options) {
-			console.log(tag, tags, options)
 			return tags.includes(tag);
-		}
+		},
+		ifEq(a, b, opts) {
+			if (a == b) {
+				return opts.fn(this);
+			} else {
+				return opts.inverse(this);
+			}
+		},
 	},
 });
 app.use(volleyball);
@@ -73,14 +79,14 @@ app.get('/', function (req, res) {
 
 app.get('/error', function (req, res) {
 	let message;
-	switch(req.query.status) {
+	switch (req.query.status) {
 		case '403':
 			message = 'You don\'t have access to this page';
 			break;
 		case '404':
 			message = 'Page not found';
 			break;
-		default: 
+		default:
 			message = 'Something went wrong'
 	}
 	res.render('pages/error.hbs', {

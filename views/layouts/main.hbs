@@ -9,8 +9,8 @@
     {{/each}} --}}
     <title>{{title}}</title>
     <link rel="stylesheet" href="/assets/css/main.css" type="text/css" />
-    {{#if isAuthPage}}
     <link rel="stylesheet" href="/assets/css/auth.css" type="text/css" />
+    {{#if isAuthPage}}
     <script src='/assets/js/auth.js'></script>
     {{/if}}
 </head>
@@ -19,6 +19,20 @@
     {{> header}}
     {{{body}}}
     {{> footer}}
+
+    <div id="loader" class="hidden">
+        <div class="lds-grid">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </div>
 
     <script>
         let isMenuOpen = false;
@@ -33,6 +47,56 @@
 
             isMenuOpen = !isMenuOpen;
         })
+    </script>
+
+    <script>
+        const loader = document.getElementById('loader');
+        let isLoaderVisible = false;
+        function toggleLoader() {
+            isLoaderVisible
+                ? loader.classList.add('hidden')
+                : loader.classList.remove('hidden');
+
+            isLoaderVisible = !isLoaderVisible;
+        }
+    </script>
+
+    <script>
+        const savedStates = {}
+        async function toggleSavePost(event, isSaved) {
+            event.preventDefault();
+            event.stopPropagation();
+            const id = event.currentTarget.getAttribute('data-id')
+            if (savedStates[id] === undefined) savedStates[id] = isSaved;
+
+            const path = event.currentTarget.querySelector('svg path');
+            toggleLoader();
+            const res = await fetch(`/post/${id}`, {
+                method: 'POST',
+            }).then(res => res.json())
+            toggleLoader();
+            if (res.message === "OK") {
+                savedStates[id] = !savedStates[id];
+                if (savedStates[id]) {
+                    path.setAttribute('stroke-width', '0px')
+                    path.setAttribute('fill', '#f1ff31')
+                    path.setAttribute('stroke', 'none')
+                } else {
+                    path.setAttribute('stroke-width', '30px')
+                    path.setAttribute('fill', 'none')
+                    path.setAttribute('stroke', 'white')
+                }
+            } else {
+                alert('Error on saving post, try again later')
+            }
+        }
+
+        function handlePostEditClick(event, link) {
+            event.preventDefault();
+            event.stopPropagation();
+
+            location.pathname = link
+        }
     </script>
 </body>
 
