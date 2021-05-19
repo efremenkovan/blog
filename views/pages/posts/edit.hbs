@@ -119,7 +119,7 @@
             .then(res => res.ok ? res.json() : res)
 
         if (res.message === 'OK') {
-            history.back();
+            location.replace(document.referrer);
         }
     }
 

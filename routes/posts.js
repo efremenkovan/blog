@@ -54,9 +54,11 @@ router.post('/post/create', authMiddleware, async (req, res, next) => {
     const {
         title,
         body,
-        tags: formTags,
         cover
     } = req.body;
+    let {tags: formTags} = req.body;
+
+    if (!Array.isArray(formTags)) formTags = [formTags];
 
     const post = new Post({
         title,
@@ -90,9 +92,12 @@ router.put('/post/:id', authMiddleware, async (req, res, next) => {
     const {
         title,
         body,
-        tags: formTags,
         cover
     } = req.body;
+    let {tags: formTags} = req.body;
+
+    if (!Array.isArray(formTags)) formTags = [formTags];
+
     const post = await Post.findById(req.params.id);
 
     if (req.session.uid != post.author._id.toString()) return res.status(403).send({
@@ -121,12 +126,6 @@ router.put('/post/:id', authMiddleware, async (req, res, next) => {
 })
 
 router.delete('/post/:id', authMiddleware, async (req, res, next) => {
-    const {
-        title,
-        body,
-        tags: formTags,
-        cover
-    } = req.body;
     const post = await Post.findById(req.params.id);
 
     if (req.session.uid != post.author._id.toString()) return res.status(403).send({
@@ -211,10 +210,7 @@ router.get('/recent-posts', async (req, res, next) => {
         });
 
     if (!posts.length) {
-        res.status(404).json({
-            message: 'posts|not_found',
-        });
-        return next();
+        res.render('pages/posts/index.hbs', { isEmpty: true });
     }
 
     const pages = Array.from(Array(Math.ceil(await Post.countDocuments({}, (err, count) => {
@@ -249,7 +245,7 @@ router.get('/recent-posts', async (req, res, next) => {
             ? currentUser.saved_posts.includes(post._id)
             : false,
         cover: post.cover,
-        link: `http://${process.env.HOSTNAME}/post/${post._id}`,
+        link: `/post/${post._id}`,
         id: post._id
     }))
 
@@ -279,7 +275,7 @@ router.get('/post/:id', async (req, res, next) => {
             title: post.title,
             body: post.body,
             cover: post.cover,
-            link: `http://${process.env.HOSTNAME}/post/${post._id}`,
+            link: `/post/${post._id}`,
             author: {
                 name: post.author.name,
                 surname: post.author.surname,
@@ -317,7 +313,7 @@ router.get('/blog', authMiddleware, async (req, res, next) => {
         }) => sum + rate, 0),
         isSaved: user.saved_posts.includes(post._id),
         isUserPost: true,
-        link: `http://${process.env.HOSTNAME}/post/${post._id}`,
+        link: `/post/${post._id}`,
         id: post._id,
     }));
 
@@ -347,10 +343,13 @@ router.get('/saved-posts', async (req, res, next) => {
     posts = posts.slice(startIndex, lastIndex)
 
     if (!posts.length) {
-        res.status(404).json({
-            message: 'posts|not_found',
-        });
-        return next();
+        res.render('pages/posts/index.hbs', {
+            isEmpty: true,
+        },);
+        // res.status(404).json({
+        //     message: 'posts|not_found',
+        // });
+        // return next();
     }
 
     const pages = Array.from(Array(Math.ceil(posts.length / limit)), (_, index) => index + 1)
@@ -370,7 +369,7 @@ router.get('/saved-posts', async (req, res, next) => {
         isSaved: !!user.saved_posts.find(({ _id }) => post._id === _id),
         isUserPost: req.session.uid == post.author._id.toString(),
         cover: post.cover,
-        link: `http://${process.env.HOSTNAME}/post/${post._id}`,
+        link: `/post/${post._id}`,
         id: post._id
     }))
 
