@@ -1,9 +1,0 @@
-<div class="pagination">
-    {{#each this as | page |}}
-    {{#ifEq page @root.active_page}}
-    <a href="?page={{page}}" class="pagination__element active">{{page}}</a>
-    {{else}}
-    <a href="?page={{page}}" class="pagination__element">{{page}}</a>
-    {{/ifEq}}
-    {{/each}}
-</div>
