@@ -19,7 +19,7 @@ require('dotenv').config({
 const store = new MongoStore({
 	collection: 'sessions',
 	databaseName: 'PracticeBlog',
-	uri: process.env.MONGO_URI,
+	uri: process.env.MONGO_URI || "mongodb+srv://efrem:tggEQpLEnLRFx3T@cluster0.rizzd.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
 })
 
 
