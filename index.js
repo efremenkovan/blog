@@ -98,7 +98,10 @@ app.get('/error', function (req, res) {
 
 // END ROUTES
 
-mongoose.connect(process.env.MONGO_URI, {
+mongoose.connect(
+	// process.env.MONGO_URI
+	"mongodb+srv://efrem:tggEQpLEnLRFx3T@cluster0.rizzd.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
+	, {
 	useNewUrlParser: true,
 	useFindAndModify: true,
 });
