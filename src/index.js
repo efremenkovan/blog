@@ -13,7 +13,7 @@ const posts = require('./routes/posts');
 const varMiddleware = require('./middleware/variables');
 
 require('dotenv').config({
-	path: path.join(__dirname, '.env')
+	path: path.join(__dirname, '../.env')
 });
 
 const store = new MongoStore({

@@ -4,10 +4,10 @@
   "description": "pratice project",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "start:dev": "nodemon index.js",
-    "start:clean": "npm install && node index.js",
-    "start:dev:clean": "npm install && nodemon index.js",
+    "start": "node src/index.js",
+    "start:dev": "nodemon src/index.js",
+    "start:clean": "npm install && node src/index.js",
+    "start:dev:clean": "npm install && nodemon src/index.js",
     "serve": "nodemon index.js"
   },
   "keywords": [],
