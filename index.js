@@ -19,8 +19,7 @@ require('dotenv').config({
 const store = new MongoStore({
 	collection: 'sessions',
 	databaseName: 'PracticeBlog',
-	uri: "mongodb+srv://efrem:tggEQpLEnLRFx3T@cluster0.rizzd.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
-	// uri: process.env.MONGO_URI
+	uri: process.env.MONGO_URI
 })
 
 
@@ -99,8 +98,7 @@ app.get('/error', function (req, res) {
 // END ROUTES
 
 mongoose.connect(
-	// process.env.MONGO_URI
-	"mongodb+srv://efrem:tggEQpLEnLRFx3T@cluster0.rizzd.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
+	process.env.MONGO_URI
 	, {
 	useNewUrlParser: true,
 	useFindAndModify: true,
