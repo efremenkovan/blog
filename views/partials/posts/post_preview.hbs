@@ -1,0 +1,46 @@
+<a class="post-preview" href="{{this.link}}">
+    <img src="{{this.cover}}" alt="Cover" class="post-preview__cover" />
+    {{#if @root.isAuth}}
+    <button onclick="toggleSavePost(event, {{this.isSaved}})" data-id="{{this.id}}" class="post-preview__save-button">
+        <svg enable-background="new 0 0 512.019 512.019" id="bookmark" version="1.1" viewBox="0 0 512.02 512.02"
+            xml:space="preserve" xmlns="http://www.w3.org/2000/svg">
+            {{#if this.isSaved}}
+            <path
+                d="m362.68 0h-213.33c-29.455 0-53.333 23.878-53.333 53.333v448c-0.011 5.891 4.757 10.675 10.648 10.686 2.84 5e-3 5.565-1.123 7.571-3.134l141.78-141.8 141.78 141.78c4.16 4.171 10.914 4.179 15.085 0.019 2.006-2.001 3.133-4.717 3.134-7.55v-448c0-29.455-23.879-53.333-53.334-53.333z"
+                fill="#f1ff31" />
+            {{else}}
+            <path
+                d="m362.68 0h-213.33c-29.455 0-53.333 23.878-53.333 53.333v448c-0.011 5.891 4.757 10.675 10.648 10.686 2.84 5e-3 5.565-1.123 7.571-3.134l141.78-141.8 141.78 141.78c4.16 4.171 10.914 4.179 15.085 0.019 2.006-2.001 3.133-4.717 3.134-7.55v-448c0-29.455-23.879-53.333-53.334-53.333z"
+                fill="none" stroke="white" stroke-width="30" />
+            {{/if}}
+        </svg>
+    </button>
+    {{/if}}
+    {{#if isUserPost}}
+    <button class="post-preview__edit-button" onclick="handlePostEditClick(event, '/post/edit/{{this.id}}')">
+        <img src="/assets/img/edit.svg" alt="edit" />
+    </button>
+    {{/if}}
+    <div class=" post-preview__content">
+        <div class="post-preview__header">
+            <h4 class="post-preview__header__title">{{this.title}}</h4>
+            {{#unless @root.isBlog}}
+            <div class="post-preview__author">
+                <span class="post-preview__author__info">{{this.author.name}} {{this.author.surname}}</span>
+                <span class="post-preview__author__nickname">@{{this.author.nickname}}</span>
+            </div>
+            {{/unless}}
+        </div>
+        {{#if this.tags.length}}
+        <div class="post-preview__tags">
+            {{#each this.tags as | tag |}}
+            <div style="color: {{tag.color}}">
+                <span class="post-preview__tag">{{tag.label}}</span>
+            </div>
+            {{/each}}
+        </div>
+        <div class="post-preview__content__text">{{this.body}}</div>
+        <div class="post-preview__footer">Средняя оценка: {{this.rate}}</div>
+        {{/if}}
+    </div>
+</a>

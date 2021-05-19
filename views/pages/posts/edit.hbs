@@ -1,0 +1,206 @@
+<section class="page create-post">
+    <form onsubmit="handleSubmit(event)" data-id="{{post.id}}" class="form">
+        <div class="form__field">
+            <input required type="text" id="title" name="title" class="form__field__input" value="{{post.title}}" />
+            <label for="title" class="form__field__label">
+                Заголовок статьи
+            </label>
+            <div class="form__field__errors-list">
+
+            </div>
+        </div>
+
+        <div class="form__field">
+            <input required type="link" id="cover" name="cover" class="form__field__input" value="{{post.cover}}" />
+            <label for="cover" class="form__field__label">
+                Обложка статьи
+            </label>
+            <div class="form__field__errors-list">
+
+            </div>
+        </div>
+
+        <div class="form__field checkbox-group">
+            <span class="form__field__label checkbox-group__label">Теги</span>
+            {{#each tags as | tag |}}
+            <label class="form__field__label checkbox">
+                {{#if (hasTag tag.value @root.post.tags)}}
+                <input value="{{tag.value}}" type="checkbox" name="tags" class="form__field__input checkbox" checked />
+                {{else}}
+                <input value="{{tag.value}}" type="checkbox" name="tags" class="form__field__input checkbox" />
+                {{/if}}
+                <span class="form__field__input-label">{{tag.label}}</span>
+            </label>
+            {{/each}}
+
+            <div class="form__field__errors-list">
+
+            </div>
+        </div>
+
+        <div class="form__field">
+            <textarea required type="text" id="body" name="body" class="form__field__input">{{post.body}}</textarea>
+            <label for="body" class="form__field__label">
+                Текст поста
+            </label>
+            <div class="form__field__errors-list">
+
+            </div>
+        </div>
+
+        <div class="form__controls">
+            <button type="reset" class="form__controls__button remove" onclick="ensureReset(event)">Удалить</button>
+            <button type="submit" class="form__controls__button primary">Сохранить изменения</button>
+        </div>
+    </form>
+
+    <div class="modal" data-modal>
+        <div class="modal__backplate" onclick="closeModal(event)"></div>
+        <div class="modal__content">
+            <h3 class="modal__title" data-modal-title>
+
+            </h3>
+            <span class="modal__body" data-modal-body>
+
+            </span>
+            <div class="modal__actions">
+                <button class="modal__actions__button secondary" data-modal-reject>Отменить</button>
+                <button class="modal__actions__button primary" data-modal-resolve>Принять</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    function errors() {
+        return {
+            post_title: {
+                target: '',
+                container: '',
+                errorsList: [],
+            },
+            post_body: {
+                target: '',
+                container: '',
+                errorsList: [],
+            },
+            tags: {
+                target: '',
+                container: '',
+                errorsList: [],
+            },
+        }
+    }
+
+    async function handleSubmit(event) {
+        event.preventDefault();
+        const id = event.currentTarget.getAttribute('data-id');
+        const res = await fetch(`/post/${id}`, {
+            method: 'put',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams(new FormData(event.target)),
+        })
+            .then(res => res.ok ? res.json() : res)
+
+        if (res.message === 'OK') {
+            location.pathname = "/post/" + res.post_id;
+        }
+    }
+
+    async function handleRemove(event) {
+        console.log('called')
+        event.preventDefault();
+        const id = document.querySelector('form').getAttribute('data-id');
+        const res = await fetch(`/post/${id}`, {
+            method: 'delete',
+        })
+            .then(res => res.ok ? res.json() : res)
+
+        if (res.message === 'OK') {
+            location.replace(document.referrer);
+        }
+    }
+
+    const ensureReset = (e) => {
+        e.preventDefault();
+
+        ensure({
+            title: 'Очистка данных',
+            body: `Вы уверены, что хотите очистить данные? В случае удаления данные 
+                не подлежат восстановлению и Вам придется ввести их заново, если Вы передумаете.`,
+            resolve: {
+                label: 'Удалить',
+            },
+            reject: {
+                label: 'Оставить'
+            }
+        })
+            .then(() => {
+                handleRemove(e)
+                closeModal();
+            })
+            .catch(() => closeModal())
+    }
+
+    function closeModal(event) {
+        if (event) event.stopPropagation();
+        document.querySelector('[data-modal]').classList.remove('active')
+    }
+
+    async function ensure({
+        title = 'Modal header',
+        body,
+        resolve = { label: '', callback: null },
+        reject = { label: '', callback: null },
+    }) {
+        return new Promise((res, rej) => {
+            const modal = document.querySelector('[data-modal]');
+            const modalTitle = modal.querySelector('[data-modal-title]');
+            const modalBody = modal.querySelector('[data-modal-body]');
+            const modalResolve = modal.querySelector('[data-modal-resolve]');
+            const modalReject = modal.querySelector('[data-modal-reject]');
+
+            modal.classList.add('active');
+            modalTitle.textContent = title;
+            modalBody.textContent = body;
+            modalResolve.textContent = resolve.label;
+            modalReject.textContent = reject.label;
+
+            modalResolve.onclick = (e) => {
+                e.preventDefault();
+                console.log('called this')
+                if (resolve.callback) {
+                    resolve.callback
+                }
+                modal.classList.remove('active');
+                res();
+            }
+
+            modalReject.onclick = (e) => {
+                e.preventDefault();
+                if (reject.callback) {
+                    reject.callback
+                }
+                modal.classList.remove('active');
+                rej();
+            }
+        })
+    }
+
+    window.onload = () => {
+        const body = document.getElementById('body');
+        const callback = (e) => {
+            const dh = body.scrollHeight - body.clientHeight;
+            console.log(body.scrollHeight, body.clientHeight)
+            if (body.scrollHeight) {
+                body.style.height = body.scrollHeight + 2 + 'px';
+            }
+            window.scrollBy(0, dh)
+        }
+
+        callback();
+        body.addEventListener('input', callback)
+    }
+</script>

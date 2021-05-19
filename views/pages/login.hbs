@@ -1,0 +1,188 @@
+<section class="page auth-page">
+    <form onsubmit="handleSubmit(event)" class="form login" id="form">
+        <div class="form__field">
+            <input required type="text" id="nickname" name="nickname" class="form__field__input" />
+            <label for="nickname" class="form__field__label">
+                Имя пользователя
+            </label>
+            <div class="form__field__errors-list">
+
+            </div>
+        </div>
+
+        <div class="form__field">
+            <input required type="password" id="password" name="password" class="form__field__input" />
+            <label for="password" class="form__field__label">
+                Пароль
+            </label>
+            <div class="form__field__errors-list">
+
+            </div>
+        </div>
+
+        <button type="submit" class="form__controls__button primary">Войти</button>
+    </form>
+
+    <div class="modal" data-modal>
+        <div class="modal__backplate" onclick="closeModal(event)"></div>
+        <div class="modal__content">
+            <h3 class="modal__title" data-modal-title>
+
+            </h3>
+            <span class="modal__body" data-modal-body>
+
+            </span>
+            <div class="modal__actions">
+                <button class="modal__actions__button secondary" data-modal-reject>Отменить</button>
+                <button class="modal__actions__button primary" data-modal-resolve>Принять</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    function errors() {
+        return {
+            password: {
+                target: document.getElementById('password'),
+                container: document.getElementById('password').parentNode.getElementsByClassName('form__field__errors-list')[0],
+                errorsList: [
+                    { type: 'wrong', value: 'Wrong password, try again' }
+                ]
+            },
+            nickname: {
+                target: document.getElementById('nickname'),
+                container: document.getElementById('nickname').parentNode.getElementsByClassName('form__field__errors-list')[0],
+                errorsList: [
+                    { type: 'not_found', value: 'No such a nickname. Sign up first or try another nickname.' }
+                ]
+            }
+        }
+    }
+
+    const elements = document.getElementsByClassName('form__field__input');
+    for (let i = 0; i < elements.length; i++) {
+        const element = elements[i];
+        element.addEventListener('focus', () => {
+            element.parentNode.getElementsByClassName('form__field__errors-list')[0].innerHTML = ''
+        })
+    }
+
+    async function handleSubmit(e) {
+        e.preventDefault()
+        clearErrors();
+
+        const res = await fetch('/auth/signin', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams(new FormData(e.target)),
+        })
+            .then(res => res.json())
+            .then(data => data);
+        if (res.message === "OK") {
+            location.pathname = "/"
+
+        } else {
+            errorsHandler(res.message.split(/\|\|/));
+        }
+    }
+
+    const ensureReset = (e) => {
+        e.preventDefault();
+
+        ensure({
+            title: 'Очистка данных',
+            body: `Вы уверены, что хотите очистить данные? В случае удаления данные 
+                не подлежат восстановлению и Вам придется ввести их заново, если Вы передумаете.`,
+            resolve: {
+                label: 'Удалить',
+            },
+            reject: {
+                label: 'Оставить'
+            }
+        })
+            .then(() => {
+                clearErrors();
+                document.getElementById('form').reset();
+                closeModal();
+            })
+            .catch(() => closeModal())
+    }
+
+    function closeModal(event) {
+        if (event) event.stopPropagation();
+        document.querySelector('[data-modal]').classList.remove('active')
+    }
+
+    async function ensure({
+        title = 'Modal header',
+        body,
+        resolve = { label: '', callback: null },
+        reject = { label: '', callback: null },
+    }) {
+        return new Promise((res, rej) => {
+            const modal = document.querySelector('[data-modal]');
+            const modalTitle = modal.querySelector('[data-modal-title]');
+            const modalBody = modal.querySelector('[data-modal-body]');
+            const modalResolve = modal.querySelector('[data-modal-resolve]');
+            const modalReject = modal.querySelector('[data-modal-reject]');
+
+            modal.classList.add('active');
+            modalTitle.textContent = title;
+            modalBody.textContent = body;
+            modalResolve.textContent = resolve.label;
+            modalReject.textContent = reject.label;
+
+            modalResolve.onclick = (e) => {
+                e.preventDefault();
+                if (resolve.callback) {
+                    resolve.callback
+                }
+                modal.classList.remove('active');
+                res();
+            }
+
+            modalReject.onclick = (e) => {
+                e.preventDefault();
+                if (reject.callback) {
+                    reject.callback
+                }
+                modal.classList.remove('active');
+                rej();
+            }
+        })
+    }
+
+    function clearErrors() {
+        const elements = document.getElementsByClassName('form__field__input');
+        for (let i = 0; i < elements.length; i++) {
+            const element = elements[i];
+            element.addEventListener('focus', () => {
+                element.parentNode.getElementsByClassName('form__field__errors-list')[0].innerHTML = ''
+            })
+        }
+    }
+
+    function errorsHandler(resErrors) {
+        function proceedError(source, type) {
+            const error = errors()[source].errorsList.find(error => error.type === type);
+            if (errors()[source].container.querySelector(`[data-type=${error.type}]`)) return;
+            errors()[source]
+                .container
+                .insertAdjacentHTML('beforeEnd', `
+                    <span class="error" data-type="${error.type}">${error.value}</span>
+                `)
+        }
+
+        if (Array.isArray(resErrors)) {
+            resErrors.forEach(e => {
+                const [source, type] = e.split('|');
+                proceedError(source, type)
+            })
+        } else {
+            proceedError(...resErrors.split('|'))
+        }
+    }
+</script>

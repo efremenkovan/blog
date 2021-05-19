@@ -1,0 +1,312 @@
+<section class="page auth-page">
+    <form onsubmit="handleSubmit(event)" class="form" id="form">
+        <div class="form__field">
+            <input required type="text" id="nickname" name="nickname" class="form__field__input" />
+            <label for="nickname" class="form__field__label">
+                Имя пользователя
+            </label>
+            <div class="form__field__errors-list">
+
+            </div>
+        </div>
+
+        <div class="form__field">
+            <input required type="text" id="name" name="name" class="form__field__input" />
+            <label for="name" class="form__field__label">
+                Ваше имя
+            </label>
+            <div class="form__field__errors-list">
+
+            </div>
+        </div>
+
+        <div class="form__field">
+            <input required type="text" id="surname" name="surname" class="form__field__input" />
+            <label for="surname" class="form__field__label">
+                Ваша фамилия
+            </label>
+            <div class="form__field__errors-list">
+
+            </div>
+        </div>
+
+
+        <div class="form__field">
+            <input required type="password" id="password" name="password" class="form__field__input" />
+            <label for="password" class="form__field__label">
+                Пароль
+            </label>
+            <div class="form__field__errors-list">
+
+            </div>
+        </div>
+
+        <div class="form__field">
+            <input required type="password" id="repeat_password" name="repeat_password" class="form__field__input">
+            <label for="repeat_password" class="form__field__label">
+                Повторите пароль
+            </label>
+            <div class="form__field__errors-list">
+
+            </div>
+        </div>
+        <div class="form__controls">
+            <button type="reset" class="form__controls__button" onclick="ensureReset(event)">Сбросить</button>
+            <button type="submit" class="form__controls__button primary">Зарегистрироваться</button>
+        </div>
+    </form>
+
+    <div class="modal" data-modal>
+        <div class="modal__backplate" onclick="closeModal(event)"></div>
+        <div class="modal__content">
+            <h3 class="modal__title" data-modal-title>
+
+            </h3>
+            <span class="modal__body" data-modal-body>
+
+            </span>
+            <div class="modal__actions">
+                <button class="modal__actions__button secondary" data-modal-reject>Отменить</button>
+                <button class="modal__actions__button primary" data-modal-resolve>Принять</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    function errors() {
+        return {
+            password: {
+                target: document.getElementById('password'),
+                container: document.getElementById('password').parentNode.querySelector('.form__field__errors-list'),
+                errorsList: [
+                    {
+                        type: 'length',
+                        value: 'Пароль должен быть не менее 6 символов.',
+                        validate: (string) => string.length >= 6,
+                    },
+                    {
+                        type: 'chars',
+                        value: 'Пароль должен содержать как минимум 1 цифру и 1 букву.',
+                        validate: (string) => new RegExp(/^(?=.*[0-9])(?=.*[a-zA-Z])([a-zA-Z0-9]+)$/).test(string)
+                    }
+                ]
+            },
+            repeat_password: {
+                target: document.getElementById('repeat_password'),
+                container: document.getElementById('repeat_password').parentNode.querySelector('.form__field__errors-list'),
+                errorsList: [
+                    {
+                        type: 'equal',
+                        value: 'Пароль и повторение пароля не совпадают.',
+                        validate: (s1) => s1 === document.querySelector('#password').value,
+                    }
+                ]
+            },
+            nickname: {
+                target: document.getElementById('nickname'),
+                container: document.getElementById('nickname').parentNode.querySelector('.form__field__errors-list'),
+                errorsList: [
+                    {
+                        type: 'taken',
+                        value: 'Такой пользователь уже зарегистрирован',
+                    },
+                    {
+                        type: 'chars',
+                        value: 'Никнейм может содержать только буквы (минимум 1) и символ \"_\"',
+                        validator: (string) => new RegExp(/^(\w+|\_?)$/).test(string)
+                    },
+                    {
+                        type: 'length',
+                        value: 'Никнейм должен быть не менее 4х символов и не более 24.',
+                        validator: (string) => string.length >= 4 && string.length < 24
+                    }
+                ]
+            },
+            name: {
+                target: document.getElementById('name'),
+                container: document.getElementById('name').parentNode.querySelector('.form__field__errors-list'),
+                errorsList: [
+                    {
+                        type: 'chars',
+                        value: 'Имя может состоять только из букв',
+                        validate: (string) => new RegExp(/^[a-zа-я]+$/gi).test(string)
+                    },
+                    {
+                        type: 'length',
+                        value: 'Имя не может быть короче двух символов',
+                        validate: (string) => new RegExp(/^\w{2,}$/gi).test(string)
+                    }
+                ]
+            },
+            surname: {
+                target: document.getElementById('surname'),
+                container: document.getElementById('surname').parentNode.querySelector('.form__field__errors-list'),
+                errorsList: [
+                    {
+                        type: 'chars',
+                        value: 'Фамилия может состоять только из букв',
+                        validate: (string) => new RegExp(/^[a-zа-я]+$/gi).test(string)
+                    },
+                    {
+                        type: 'length',
+                        value: 'Фамилия не может быть короче двух символов',
+                        validate: (string) => new RegExp(/^\w{2,}$/gi).test(string)
+                    }
+                ]
+            }
+        }
+    }
+
+    const elements = document.getElementsByClassName('form__field__input');
+    for (let i = 0; i < elements.length; i++) {
+        const element = elements[i];
+        element.addEventListener('focus', () => {
+            element.parentNode.getElementsByClassName('form__field__errors-list')[0].innerHTML = ''
+        })
+    }
+
+    async function handleSubmit(e) {
+        e.preventDefault()
+        clearErrors();
+        if (!validateForm(new FormData(e.target))) {
+            console.error('validation failed')
+            return;
+        }
+
+        if (checkPassEquality()) {
+            const name = document.getElementById('name').value;
+            const data = new URLSearchParams(new FormData(e.target));
+            const res = await fetch('/auth/signup', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: data,
+            })
+                .then(res => res.json())
+                .then(data => data);
+            res.message === "OK"
+                ? location.pathname = "/"
+                : errorsHandler(res.message);
+        } else {
+            errorsHandler('repeat_password|equal')
+        }
+    }
+
+    function checkPassEquality() {
+        return document.getElementById('password').value ===
+            document.getElementById('repeat_password').value;
+    }
+
+    function validateForm(data) {
+        let validator = true;
+        for (let pair of data) {
+            const [field, value] = pair;
+            errors()[field].errorsList.forEach(error => {
+                if (error.validate && !error.validate(value)) {
+                    validator = false;
+                    proceedError(field, error.type);
+                }
+            })
+        }
+        return validator;
+    }
+
+    function clearErrors() {
+        const elements = document.getElementsByClassName('form__field__input');
+        for (let i = 0; i < elements.length; i++) {
+            const element = elements[i];
+            element.addEventListener('focus', () => {
+                element.parentNode.getElementsByClassName('form__field__errors-list')[0].innerHTML = ''
+            })
+        }
+    }
+
+    const ensureReset = (e) => {
+        e.preventDefault();
+
+        ensure({
+            title: 'Очистка данных',
+            body: `Вы уверены, что хотите очистить данные? В случае удаления данные 
+                не подлежат восстановлению и Вам придется ввести их заново, если Вы передумаете.`,
+            resolve: {
+                label: 'Удалить',
+            },
+            reject: {
+                label: 'Оставить'
+            }
+        })
+            .then(() => {
+                clearErrors();
+                document.getElementById('form').reset();
+                closeModal();
+            })
+            .catch(() => closeModal())
+    }
+
+    function closeModal(event) {
+        if (event) event.stopPropagation();
+        document.querySelector('[data-modal]').classList.remove('active')
+    }
+
+    async function ensure({
+        title = 'Modal header',
+        body,
+        resolve = { label: '', callback: null },
+        reject = { label: '', callback: null },
+    }) {
+        return new Promise((res, rej) => {
+            const modal = document.querySelector('[data-modal]');
+            const modalTitle = modal.querySelector('[data-modal-title]');
+            const modalBody = modal.querySelector('[data-modal-body]');
+            const modalResolve = modal.querySelector('[data-modal-resolve]');
+            const modalReject = modal.querySelector('[data-modal-reject]');
+
+            modal.classList.add('active');
+            modalTitle.textContent = title;
+            modalBody.textContent = body;
+            modalResolve.textContent = resolve.label;
+            modalReject.textContent = reject.label;
+
+            modalResolve.onclick = (e) => {
+                e.preventDefault();
+                if (resolve.callback) {
+                    resolve.callback
+                }
+                modal.classList.remove('active');
+                res();
+            }
+
+            modalReject.onclick = (e) => {
+                e.preventDefault();
+                if (reject.callback) {
+                    reject.callback
+                }
+                modal.classList.remove('active');
+                rej();
+            }
+        })
+    }
+
+    function proceedError(source, type) {
+        const error = errors()[source].errorsList.find(error => error.type === type);
+        if (errors()[source].container.querySelector(`[data-type=${error.type}]`)) return;
+        errors()[source]
+            .container
+            .insertAdjacentHTML('beforeEnd', `
+                    <span class="error" data-type="${error.type}">${error.value}</span>
+                `)
+    }
+
+    function errorsHandler(resErrors) {
+        if (Array.isArray(resErrors)) {
+            resErrors.forEach(e => {
+                const [source, type] = e.split('|');
+                proceedError(source, type)
+            })
+        } else {
+            proceedError(...resErrors.split('|'))
+        }
+    }
+</script>
